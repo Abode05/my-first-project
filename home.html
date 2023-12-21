@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- import bootstrab -->
+<script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+<script src="./node_modules/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="loader.css">
+
+    <title>social-media</title>
+    <style>
+        body{
+            /* background: #e6e3f3     */
+            /* padding: 25px; */
+            background-color: rgb(206, 206, 206);
+            color :black;
+            font-size: 25px;
+                }
+                .dark-mode {
+                    background-color: black;
+                    color: white;
+                                    }
+        #add_post_btn{
+            position: fixed;
+            width: 60px;
+            bottom: 5%;
+            right: 7%;
+            display: flex;
+            justify-content: center;
+            height: 60px;
+            font-size: 85px;
+            line-height: 37px;
+            color: aliceblue;
+            cursor: pointer;
+            box-shadow: 0px 10px 10px rgba(0, 0, 0,0.3);
+   
+        }
+   
+   
+
+    /*end LOADER STYLES */
+
+    </style>
+</head>
+<body>
+    <!-- LOADER DIV -->
+    <div id="loader" style="background-color: rgba(128, 128, 128, 0.418);  position: fixed; top: 0px; bottom: 0px; left: 0px; right: 0px; margin: auto auto; display: flex; justify-content: center; align-items: center; z-index: 9999; width: 100px; height: 100px; border-radius: 20px;">
+        <div class="lds-dual-ring"></div>
+    </div>
+    <!-- END LOADER DIV -->
+       
+                        <!--\\ modals -->
+                <!-- LOGIN MODAL -->
+<div class="modal fade" id="login-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel" >LOGIN</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label" >username:</label>
+                            <input type="text" class="form-control" id="username-input">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label" >password:</label>
+                            <input type="password" class="form-control" id="password-input" value="112345"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="loginbuttonclicked()">login</button>
+                </div>
+            </div>
+        </div>
+</div>
+     <!--   end LOGIN MODAL -->
+
+                <!--   SIGNIN  MODAL -->
+<div class="modal fade" id="signin-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel" >SIGNIN</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label">profile_image</label>
+                            <input type="file" class="form-control" id="profile-image-input" value="" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label" >name:</label>
+                            <input type="text" class="form-control" id="signin-name-input">
+                        </div>
+                        <div class="mb-3">
+                            <label for="recipient-name" class="col-form-label" >username:</label>
+                            <input type="text" class="form-control" id="signin-username-input">
+                        </div>
+                        <div class="mb-3">
+                            <label for="message-text" class="col-form-label" >password:</label>
+                            <input type="password" class="form-control" id="password-input" value=""/>
+                        </div>
+                        
+                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="signin_buttonclicked()">signin</button>
+                </div>
+            </div>
+        </div>
+</div>
+                 <!--   end SIGNIN MODAL -->
+
+                <!--   ADD NEW POST  MODAL -->
+    <div class="modal fade" id="new-post-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="post-modal-title" >create new post</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="post-title-input" class="col-form-label" >title:</label>
+                            <input type="text" class="form-control" id="post-title-input">  
+
+                            <input type="hidden" id="post-id-input" value="">
+                        </div>
+                        <div>
+                        <textarea name="" id="post-body-input" style="width: 100%; height: 80px; border-radius: 10px; resize:none; border-color: darkgray;">
+                        
+                        </textarea>
+                        </div>
+
+                        <div>
+                            <label for="post-image-input" class="col-form-label">image</label>
+                            <input type="file" class="form-control" id="post-image-input">
+                        </div>
+
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button  id="post-create-modal-btn" type="button" class="btn btn-primary" onclick="create_new_post()">create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+     <!--   ADD NEW POST  MODAL -->
+
+    <!--   DELETE POST  MODAL -->
+    <div class="modal fade" id="delete-post-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="post-modal-title">Are you sure to want delate the post?
+                        <span id="delate-post-title"></span>
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- find id the post -->
+                <input type="hidden" id="delete-post-id-input" value="">
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="post-create-modal-btn" type="button" class="btn btn-danger"
+                        onclick="confirm_post_delete()">delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--   DELETE POST  MODAL -->
+    <!--\\End modals -->
+
+             <!-- =====ADD NEW POST==== -->
+            <div class="bg-primary rounded-5" id="add_post_btn" onclick="addBtnClicked()">
+                +
+            </div>
+            <!-- =====END ADD NEW POST==== -->
+
+    <!-- navbar cont  -->
+    <div class="container ">
+        <div class="d-flex justify-content-center" >
+             <div class="col-9">
+                  <nav class="navbar navbar-expand-lg bg-body-tertiary shadow rounded p-3 ">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">ABODE_05</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link"  onclick="profileclickuser()" style="cursor: pointer;">Profile</a>
+                        </div>
+
+                        <!-- non logged in user -->
+                        <div class="d-flex w-100 justify-content-end" id="login-div">
+                            <button id="login-btn" type="button" data-bs-toggle="modal" data-bs-target="#login-modal" data-bs-whatever="@mdo"  class="btn btn-outline-success mx-3 ">LOGIN</button>
+                            <button id="signin-btn" type="button"  data-bs-toggle="modal" data-bs-target="#signin-modal" class="btn btn-outline-success">SIGNIN</button>
+                    </div>
+                    <!--END non logged in user -->
+
+
+                    
+
+
+                    <!-- logged in user -->
+                    <div class="d-flex w-100 justify-content-end align-items-center" id="logout-div">
+                            
+                                <img id="profileimg" src="profile-pics/1.png" alt="" width="40px" height="40px" class=" rounded-circle border border-1">
+                               <b id="nav-username">okop</b>
+                            
+                          
+                        <button onclick="logout()" id="logout-btn" type="button" data-bs-toggle="modal"  class="btn btn-outline-danger mx-3 ">LOGOUT</button>
+                        
+                    </div>
+                     <!--end logged in user -->
+                     
+
+                </div>
+            </div>
+                  </nav>
+            </div>
+        </div>
+    </div>
+<!--END navbar cont  -->
+
+<!-- MAIN CONTENT -->
+<div class="container " style="height: 1000px;">
+        
+                <!-- all POSTS -->
+        <div class="d-flex justify-content-center mt-5">
+            <div class="col-9">
+                <div id="posts">
+
+                    <!--card post -->
+                    <div class="card shadow my-4" id="post">
+                        <div class="card-header">
+                            <img src="./profile-pics/1.png" alt="" class=" rounded-circle border border-1" style="width: 40px ;height: 40px;">
+                            <b>@abood</b>
+
+                        </div>
+                        <div class="card-body ">
+                                <img  class="w-100 " src="./placeholderimg/abody1.jpg" alt="" style="height: 500px;">
+                                <h6 class="mt-1 text-dark-emphasis">2 min ago</h6>
+                                <h5>title</h5>
+                                <p>knlklutflouhoufhhgghhhyuhg</p>
+
+                        <div>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill"
+                                viewBox="0 0 16 16">
+                                <path
+                                    d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                            </svg>
+                            <span>(3) Comment</span>
+                          </div>
+                        </div>
+                    </div>
+                    <!-- END card post -->
+
+                </div>
+           </div>
+        </div> 
+        <!--END all POSTS -->
+
+</div>
+<!-- END MAIN CONTENT -->
+
+<!-- =====ALERT==== -->
+<div id="sucess-alert" class="show fade" style="position: fixed; z-index: 99999; width: 30%; bottom: 0;right: 0;"></div>
+<!-- =====ALERT==== -->
+
+
+<script src="mainLogic.js"></script>
+   <script src="homeScript.js"></script>
+   
+   <script>
+    function myFunction() {
+            var element = document.body;
+            element.classList.toggle("dark-mode");
+        }
+   </script>
+</body>
+</html>
